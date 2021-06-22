@@ -20,8 +20,8 @@ class Uploader {
         }
         // リダイレクトにはヘッダ命令
 //        header("Location: http://" . $_SERVER["HTTP_HOST"]);
-        header("Location: https://localhost/myapps/PdfUploader/index.php"); // ローカルサーバーテスト用
-//        header("Location: http://" . $_SERVER["HTTP_HOST"] . "/test_php/pdf_uploader/index.php"); // テスト環境用
+//        header("Location: https://localhost/myapps/PdfUploader/index.php"); // ローカルサーバーテスト用
+        header("Location: http://" . $_SERVER["HTTP_HOST"] . "/test_php/pdf_uploader/index.php"); // テスト環境用
         exit;
     }
 
@@ -88,7 +88,7 @@ class Uploader {
     private function _validateUpload() {
         if (!isset($_FILES["pdf"]) || !isset($_FILES["pdf"]["error"])) { // "error" は改ざんされたフォームからのチェック
             // 変なファイル飛んできたらエスケープ
-            throw new \Exception("無効のファイルです。");
+            throw new \Exception("ファイルサイズが大きすぎる（1MB以上）か、無効のファイルです。");
         }
 
         // エラーの種類に応じた処理
