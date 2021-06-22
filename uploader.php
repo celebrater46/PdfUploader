@@ -61,19 +61,12 @@ class PdfUploader {
                 continue;
             }
             $files[] = $file;
-//            if (file_exists(THUMBNAIL_DIR . "/" . $file)) { // サムネイルがあるかどうか
-//                // $images[] = basename(THUMBNAIL_DIR . "/" . $file); // 括弧の位置がおかしかったおかげで画像が表示されなかった（ディレクトリ生成に失敗していた）
-//                $images[] = basename(THUMBNAIL_DIR) . "/" . $file;
-//            } else {
-//                // $images[] = basename(IMAGES_DIR . "/" . $file); // 上に同じ
-//                $images[] = basename(IMAGES_DIR) . "/" . $file;
-//            }
             $images[] = basename(IMAGES_DIR) . "/" . $file;
 
             // 50回の制限を超えたらエラーに(無限ループ対策)
             $test++;
             if ($test > 50) {
-                throw new \Exception("無限ループが発生しとるで！！");
+                throw new \Exception("処理回数が50回を超えました");
                 exit;
             }
         }
@@ -81,20 +74,17 @@ class PdfUploader {
         return $images;
     }
 
-
-
-
     private function _save($ext) {
     $this->_imageFileName = sprintf(
-      '%s_%s.%s',
-      time(),
-      sha1(uniqid(mt_rand(), true)),
-      $ext
+        '%s_%s.%s',
+        time(), // UNIX Time Stamp
+        sha1(uniqid(mt_rand(), true)),
+        $ext
     );
     $savePath = IMAGES_DIR . '/' . $this->_imageFileName;
     $res = move_uploaded_file($_FILES['image']['tmp_name'], $savePath);
     if ($res === false) {
-      throw new \Exception('Could not upload!');
+      throw new \Exception('アップロードに失敗しました');
     }
     return $savePath;
     }
