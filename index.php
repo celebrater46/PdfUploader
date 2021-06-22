@@ -4,7 +4,7 @@ session_start(); // セッション宣言
 
 ini_set('display_errors', 1); // エラーメッセージ出力（1で表示）
 define('MAX_FILE_SIZE', 1 * 1024 * 1024); // ファイルサイズ制限（1MB）
-define('IMAGES_DIR', __DIR__ . '/files'); // PDFファイルのディレクトリ（__DIR__ は現在のディレクトリ取得）
+define('FILES_DIR', __DIR__ . '/files'); // PDFファイルのディレクトリ（__DIR__ は現在のディレクトリ取得）
 
 
 // さまざまな表示のためのエスケープ
@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") { // 定義済み変数。投稿、�
 }
 
 list($success, $error) = $uploader->getResults();
-$images = $uploader->getImages();
+$pdfFiles = $uploader->getPdfFiles();
 
 ?>
 <!DOCTYPE html>
@@ -88,7 +88,7 @@ $images = $uploader->getImages();
 </head>
 <body>
   <div class="btn">
-    アップロードやで！！
+    PDFをアップロードします
     <form action="" method="post" enctype="multipart/form-data" id="my-form">
       <!-- ファイルの最大サイズの指定 -->
       <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo h(MAX_FILE_SIZE); ?>">
@@ -105,10 +105,10 @@ $images = $uploader->getImages();
   <?php endif; ?>
 
   <ul>
-    <?php foreach ($images as $image) : ?>
+    <?php foreach ($pdfFiles as $pdfFile) : ?>
       <li>
-        <a href="<?php echo h(basename(IMAGES_DIR)) . "/" . h(basename($image)); // basename() はパスからファイル名を取得 ?>">
-          <p><?php echo h($image); ?></p>
+        <a href="<?php echo h(basename(FILES_DIR)) . "/" . h(basename($pdfFile)); // basename() はパスからファイル名を取得 ?>">
+          <p><?php echo h($pdfFile); ?></p>
         </a>
       </li>  
       <?php endforeach; ?> 

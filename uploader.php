@@ -3,8 +3,8 @@
 namespace PdfUploader;
 
 class Uploader {
-    private $_imageFileName;
-    private $_imageType;
+    private $_pdfFileName;
+    private $_fileType;
 
     public function upload() {
         try {
@@ -49,19 +49,19 @@ class Uploader {
         return [$success, $error];
     }
 
-    public function getImages() {
-        $images = [];
-        $files = [];
-        $imageDir = opendir(IMAGES_DIR);
-        // echo $imageDir . PHP_EOL; // テスト用
+    public function getPdfFiles() {
+        $pdfs = [];
+        $fileNames = [];
+        $fileDir = opendir(FILES_DIR);
+        // echo $fileDir . PHP_EOL; // テスト用
         // var_dump($imageDir);
         $test = 0; // テスト用
-        while (false !== ($file = readdir($imageDir))) {
-            if ($file === "." || $file === "..") {
+        while (false !== ($fileName = readdir($fileDir))) {
+            if ($fileName === "." || $fileName === "..") {
                 continue;
             }
-            $files[] = $file;
-            $images[] = basename(IMAGES_DIR) . "/" . $file;
+            $fileNames[] = $fileName;
+            $pdfs[] = basename(FILES_DIR) . "/" . $fileName;
 
             // 50回の制限を超えたらエラーに(無限ループ対策)
             $test++;
@@ -70,19 +70,19 @@ class Uploader {
 //                exit;
             }
         }
-        array_multisort($files, SORT_DESC, $images); // ファイルの逆順にイメージを並べる
-        return $images;
+        array_multisort($fileNames, SORT_DESC, $pdfs); // ファイルの逆順にイメージを並べる
+        return $pdfs;
     }
 
     private function _save($ext) {
-        $this->_imageFileName = sprintf(
+        $this->_pdfFileName = sprintf(
             '%s_%s.%s',
             time(), // UNIX Time Stamp
             sha1(uniqid(mt_rand(), true)),
             $ext
         );
-        $savePath = IMAGES_DIR . '/' . $this->_imageFileName;
-        $res = move_uploaded_file($_FILES['image']['tmp_name'], $savePath);
+        $savePath = FILES_DIR . '/' . $this->_pdfFileName;
+        $res = move_uploaded_file($_FILES['pdf']['tmp_name'], $savePath);
         if ($res === false) {
             throw new \Exception('アップロードに失敗しました');
         }
@@ -90,12 +90,12 @@ class Uploader {
     }
 
     private function _validateImageType() {
-//    $this->_imageType = exif_imagetype($_FILES["pdf"]["tmp_name"]); // 画像の種類を判別してくれる
-        $this->_imageType = mime_content_type($_FILES["pdf"]["tmp_name"]); // ファイルの種類を判別してくれる
-        if($this->_imageType !== "text/plain") {
+        $this->_fileType = mime_content_type($_FILES["pdf"]["tmp_name"]); // ファイルの種類を判別してくれる
+        if($this->_fileType !== "text/plain") {
+            var_dump($this->_fileType);
             throw new \Exception('ファイル形式が不正です。PDF以外はアップロードできません。');
         }
-        return $this->_imageType;
+        return $this->_fileType;
     }
 
     private function _validateUpload() {
