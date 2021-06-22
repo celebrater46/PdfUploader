@@ -10,29 +10,17 @@ class Uploader {
         try {
             // エラーチェック
             $this->_validateUpload();
-
             // ファイル形式をチェック
             $ext = $this->_validateImageType();
-            // var_dump($ext); // うまく行ったかチェック！
-            // exit;
-
             // 保存
             $this->_save($ext);
-
-            // 必要ならサムネイル生成
-    //        $this->_createThumbnail($savePath);
-
             $_SESSION["success"] = "アップロード成功";
         } catch (\Exception $e) {
             $_SESSION["error"] = $e->getMessage();
-            // exit;
         }
         // リダイレクトにはヘッダ命令
-        // header("Location: http://" . $_SERVER["HTTP_HOST"]);
-        // header("Location: C:\xampp\htdocs\PG\DotInstall\PHP\php7\index.php");
-        // header("Location: http://localhost/PG/DotInstall/PHP/php7/index.php"); // リダイレクトは http～が正解
-//        header("Location: http://enin-world.sakura.ne.jp/enin/pg/note/PHP/php7/index.php");
-        header("Location: https://localhost/myapps/PdfUploader/index.php");
+        header("Location: http://" . $_SERVER["HTTP_HOST"]);
+//        header("Location: https://localhost/myapps/PdfUploader/index.php");
         exit;
     }
 
@@ -54,8 +42,6 @@ class Uploader {
         $pdfs = [];
         $fileNames = [];
         $fileDir = opendir(FILES_DIR);
-        // echo $fileDir . PHP_EOL; // テスト用
-        // var_dump($imageDir);
         $test = 0; // テスト用
         while (false !== ($fileName = readdir($fileDir))) {
             if ($fileName === "." || $fileName === "..") {
@@ -68,7 +54,6 @@ class Uploader {
             $test++;
             if ($test > 50) {
                 throw new \Exception("処理回数が50回を超えました");
-//                exit;
             }
         }
         array_multisort($fileNames, SORT_DESC, $pdfs); // ファイルの逆順にイメージを並べる
@@ -96,14 +81,10 @@ class Uploader {
         if($this->_fileType !== "application/pdf") {
             throw new \Exception('ファイル形式 [ ' . $this->_fileType . ' ] はアップロードできません。');
         }
-//        return $this->_fileType;
         return "pdf";
     }
 
     private function _validateUpload() {
-        // var_dump($_FILES);
-        // exit;
-
         if (!isset($_FILES["pdf"]) || !isset($_FILES["pdf"]["error"])) { // "error" は改ざんされたフォームからのチェック
             // 変なファイル飛んできたらエスケープ
             throw new \Exception("無効のファイルです。");
