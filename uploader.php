@@ -20,8 +20,8 @@ class Uploader {
         }
         // リダイレクトにはヘッダ命令
 //        header("Location: http://" . $_SERVER["HTTP_HOST"]);
-//        header("Location: https://localhost/myapps/PdfUploader/index.php"); // ローカルサーバーテスト用
-        header("Location: http://" . $_SERVER["HTTP_HOST"] . "/test_php/pdf_uploader/index.php"); // テスト環境用
+        header("Location: https://localhost/myapps/PdfUploader/index.php"); // ローカルサーバーテスト用
+//        header("Location: http://" . $_SERVER["HTTP_HOST"] . "/test_php/pdf_uploader/index.php"); // テスト環境用
         exit;
     }
 
@@ -97,7 +97,8 @@ class Uploader {
                 return true;
             case UPLOAD_ERR_INI_SIZE: // 既定のサイズを超えていた場合
             case UPLOAD_ERR_FORM_SIZE:
-                throw new \Exception("ファイルサイズが大きすぎます。");
+                $size = MAX_FILE_SIZE / 1024;
+                throw new \Exception("ファイルサイズは " . $size . " KB までです。");
             default:
                 throw new \Exception("原因不明のエラーが発生しました。" . $_FILES["pdf"]["error"]);
         }
