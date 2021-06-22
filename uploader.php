@@ -2,7 +2,7 @@
 
 namespace PdfUploader;
 
-class PdfUploader {
+class Uploader {
     private $_imageFileName;
     private $_imageType;
 

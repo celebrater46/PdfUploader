@@ -14,7 +14,7 @@ function h($s) {
 
 require "uploader.php";
 
-$uploader = new \PdfUploader\PdfUploader();
+$uploader = new \PdfUploader\Uploader();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") { // 定義済み変数。投稿、送信が行われたらの処理
     $uploader->upload();
