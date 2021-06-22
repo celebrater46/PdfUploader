@@ -1,49 +1,34 @@
 <?php
 
-// セッション宣言
-// start_session();
-session_start();
+session_start(); // セッション宣言
 
-// アップロード時の変更箇所。IMAGES_DIR, THUMBNAIL_DIR, upload.php header
-ini_set('display_errors', 1); // xampp みたいなエラーメッセージ出してくれる
-define('MAX_FILE_SIZE', 1 * 1024 * 1024); // 1MB
-define('THUMBNAIL_WIDTH', 400);
-define('IMAGES_DIR', __DIR__ . '/img'); // 画像ファイルのディレクトリ（__DIR__ は現在のディレクトリ取得）
-define('THUMBNAIL_DIR', __DIR__ . '/s'); // サムネイルディレクトリ
-// define('IMAGES_DIR', 'http://localhost/PG/DotInstall/PHP/php7/img');
-// define('THUMBNAIL_DIR', 'http://localhost/PG/DotInstall/PHP/php7/s');
-// define('IMAGES_DIR', 'C:\xampp\htdocs\PG\DotInstall\PHP\php7\img'); // ローカル開発環境のディレクトリはこちらが正解
-// define('THUMBNAIL_DIR', 'C:\xampp\htdocs\PG\DotInstall\PHP\php7\s');
+ini_set('display_errors', 1); // エラーメッセージ出力（1で表示）
+define('MAX_FILE_SIZE', 1 * 1024 * 1024); // ファイルサイズ制限（1MB）
+define('IMAGES_DIR', __DIR__ . '/files'); // PDFファイルのディレクトリ（__DIR__ は現在のディレクトリ取得）
 
-// 画像処理には GD というプラグインが必要。入っているかどうかのチェック
-if (!function_exists('imagecreatetruecolor')) {
-  echo "GD が入ってへん！！";
-  exit;
-}
 
 // さまざまな表示のためのエスケープ
 function h($s) {
-  // return htmlspecialchars($s, "ENT_QUOTES", "UTF-8");
-  return htmlspecialchars($s, ENT_QUOTES, "UTF-8"); // ENT_QUOTES にはダブルコートつけない
+    return htmlspecialchars($s, ENT_QUOTES, "UTF-8");
 }
 
 require "uploader.php";
 
-$uploader = new \Eningrad\ImgUploader();
+$uploader = new \PdfUploader\PdfUploader();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") { // 定義済み変数。投稿、送信が行われたらの処理
-  $uploader->upload();
+    $uploader->upload();
 }
 
 list($success, $error) = $uploader->getResults();
-$images = $uploader->getImages();
+$images = $uploader->getFiles();
 
 ?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="utf-8">
-  <title>画像アップロード掲示板</title>
+  <title>PDFアップローダー</title>
   <style>
     body {
       text-align: center;
