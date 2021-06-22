@@ -31,7 +31,8 @@ class Uploader {
         // header("Location: http://" . $_SERVER["HTTP_HOST"]);
         // header("Location: C:\xampp\htdocs\PG\DotInstall\PHP\php7\index.php");
         // header("Location: http://localhost/PG/DotInstall/PHP/php7/index.php"); // リダイレクトは http～が正解
-        header("Location: http://enin-world.sakura.ne.jp/enin/pg/note/PHP/php7/index.php");
+//        header("Location: http://enin-world.sakura.ne.jp/enin/pg/note/PHP/php7/index.php");
+        header("Location: https://localhost/myapps/PdfUploader/index.php");
         exit;
     }
 
@@ -84,18 +85,19 @@ class Uploader {
         $savePath = FILES_DIR . '/' . $this->_pdfFileName;
         $res = move_uploaded_file($_FILES['pdf']['tmp_name'], $savePath);
         if ($res === false) {
-            throw new \Exception('アップロードに失敗しました');
+            throw new \Exception('[ '. $_FILES['pdf']['tmp_name'] . ' ] はアップロードに失敗しました');
         }
         return $savePath;
     }
 
     private function _validateImageType() {
         $this->_fileType = mime_content_type($_FILES["pdf"]["tmp_name"]); // ファイルの種類を判別してくれる
-        if($this->_fileType !== "text/plain") {
-            var_dump($this->_fileType);
-            throw new \Exception('ファイル形式が不正です。PDF以外はアップロードできません。');
+        // PDF 以外はエラー
+        if($this->_fileType !== "application/pdf") {
+            throw new \Exception('ファイル形式 [ ' . $this->_fileType . ' ] はアップロードできません。');
         }
-        return $this->_fileType;
+//        return $this->_fileType;
+        return "pdf";
     }
 
     private function _validateUpload() {

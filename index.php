@@ -117,7 +117,7 @@ $pdfFiles = $uploader->getPdfFiles();
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script>
     $(function() {
-      $(".msg").fadeOut(3000);
+      // $(".msg").fadeOut(3000);
       $("#my-file").on("change", function() { // ファイルが変更されたら自動的に submit
         $("#my-form").submit();
       });
