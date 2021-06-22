@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") { // 定義済み変数。投稿、�
 }
 
 list($success, $error) = $uploader->getResults();
-$images = $uploader->getFiles();
+$images = $uploader->getImages();
 
 ?>
 <!DOCTYPE html>
@@ -92,7 +92,7 @@ $images = $uploader->getFiles();
     <form action="" method="post" enctype="multipart/form-data" id="my-form">
       <!-- ファイルの最大サイズの指定 -->
       <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo h(MAX_FILE_SIZE); ?>">
-      <input type="file" name="image" id="my-file">
+      <input type="file" name="pdf" id="my-file">
       <!-- <input type="submit" value="upload"> -->
     </form>
   </div>
@@ -108,7 +108,7 @@ $images = $uploader->getFiles();
     <?php foreach ($images as $image) : ?>
       <li>
         <a href="<?php echo h(basename(IMAGES_DIR)) . "/" . h(basename($image)); // basename() はパスからファイル名を取得 ?>">
-          <img src="<?php echo h($image); ?>">
+          <p><?php echo h($image); ?></p>
         </a>
       </li>  
       <?php endforeach; ?> 

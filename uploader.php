@@ -11,7 +11,7 @@ class Uploader {
             // エラーチェック
             $this->_validateUpload();
 
-            // 画像の形式が違うと処理も変わるので、形式をチェック
+            // ファイル形式をチェック
             $ext = $this->_validateImageType();
             // var_dump($ext); // うまく行ったかチェック！
             // exit;
@@ -67,7 +67,7 @@ class Uploader {
             $test++;
             if ($test > 50) {
                 throw new \Exception("処理回数が50回を超えました");
-                exit;
+//                exit;
             }
         }
         array_multisort($files, SORT_DESC, $images); // ファイルの逆順にイメージを並べる
@@ -90,31 +90,32 @@ class Uploader {
     }
 
     private function _validateImageType() {
-//    $this->_imageType = exif_imagetype($_FILES["image"]["tmp_name"]); // 画像の種類を判別してくれる
-        $this->_imageType = mime_content_type($_FILES["image"]["tmp_name"]); // ファイルの種類を判別してくれる
+//    $this->_imageType = exif_imagetype($_FILES["pdf"]["tmp_name"]); // 画像の種類を判別してくれる
+        $this->_imageType = mime_content_type($_FILES["pdf"]["tmp_name"]); // ファイルの種類を判別してくれる
         if($this->_imageType !== "text/plain") {
             throw new \Exception('ファイル形式が不正です。PDF以外はアップロードできません。');
         }
+        return $this->_imageType;
     }
 
     private function _validateUpload() {
         // var_dump($_FILES);
         // exit;
 
-        if (!isset($_FILES["image"]) || !isset($_FILES["image"]["error"])) { // 右のは改ざんされたフォームからのチェック
+        if (!isset($_FILES["pdf"]) || !isset($_FILES["pdf"]["error"])) { // "error" は改ざんされたフォームからのチェック
             // 変なファイル飛んできたらエスケープ
             throw new \Exception("無効のファイルです。");
         }
 
         // エラーの種類に応じた処理
-        switch ($_FILES["image"]["error"]) {
+        switch ($_FILES["pdf"]["error"]) {
             case UPLOAD_ERR_OK: // うまくいった場合
                 return true;
             case UPLOAD_ERR_INI_SIZE: // 既定のサイズを超えていた場合
             case UPLOAD_ERR_FORM_SIZE:
                 throw new \Exception("ファイルサイズが大きすぎます。");
             default:
-                throw new \Exception("原因不明のエラーが発生しました。" . $_FILES["image"]["error"]);
+                throw new \Exception("原因不明のエラーが発生しました。" . $_FILES["pdf"]["error"]);
         }
     }
 }
