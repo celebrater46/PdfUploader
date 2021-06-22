@@ -19,8 +19,9 @@ class Uploader {
             $_SESSION["error"] = $e->getMessage();
         }
         // リダイレクトにはヘッダ命令
-        header("Location: http://" . $_SERVER["HTTP_HOST"]);
-//        header("Location: https://localhost/myapps/PdfUploader/index.php");
+//        header("Location: http://" . $_SERVER["HTTP_HOST"]);
+//        header("Location: https://localhost/myapps/PdfUploader/index.php"); // ローカルサーバーテスト用
+        header("Location: http://" . $_SERVER["HTTP_HOST"] . "/test_php/pdf_uploader/index.php"); // テスト環境用
         exit;
     }
 
