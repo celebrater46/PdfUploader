@@ -75,52 +75,46 @@ class PdfUploader {
     }
 
     private function _save($ext) {
-    $this->_imageFileName = sprintf(
-        '%s_%s.%s',
-        time(), // UNIX Time Stamp
-        sha1(uniqid(mt_rand(), true)),
-        $ext
-    );
-    $savePath = IMAGES_DIR . '/' . $this->_imageFileName;
-    $res = move_uploaded_file($_FILES['image']['tmp_name'], $savePath);
-    if ($res === false) {
-      throw new \Exception('アップロードに失敗しました');
-    }
-    return $savePath;
+        $this->_imageFileName = sprintf(
+            '%s_%s.%s',
+            time(), // UNIX Time Stamp
+            sha1(uniqid(mt_rand(), true)),
+            $ext
+        );
+        $savePath = IMAGES_DIR . '/' . $this->_imageFileName;
+        $res = move_uploaded_file($_FILES['image']['tmp_name'], $savePath);
+        if ($res === false) {
+            throw new \Exception('アップロードに失敗しました');
+        }
+        return $savePath;
     }
 
     private function _validateImageType() {
-    $this->_imageType = exif_imagetype($_FILES["image"]["tmp_name"]); // 画像の種類を判別してくれる
-    switch ($this->_imageType) {
-      case IMAGETYPE_GIF:
-        return "gif"; // 語尾に「やで」とかつけると拡張子の後ろに追加されちゃう。
-      case IMAGETYPE_JPEG:
-        return "jpg";
-      case IMAGETYPE_PNG:
-        return "png";
-      default:
-        throw new \Exception("gif jpg png 以外は認めへんっ！！");
-    }
+//    $this->_imageType = exif_imagetype($_FILES["image"]["tmp_name"]); // 画像の種類を判別してくれる
+        $this->_imageType = mime_content_type($_FILES["image"]["tmp_name"]); // ファイルの種類を判別してくれる
+        if($this->_imageType !== "text/plain") {
+            throw new \Exception('ファイル形式が不正です。PDF以外はアップロードできません。');
+        }
     }
 
     private function _validateUpload() {
-    // var_dump($_FILES);
-    // exit;
+        // var_dump($_FILES);
+        // exit;
 
-    if (!isset($_FILES["image"]) || !isset($_FILES["image"]["error"])) { // 右のは改ざんされたフォームからのチェック
-      // 変なファイル飛んできたらエスケープ
-      throw new \Exception("そんなファイルはアップロードできん。");
-    }
+        if (!isset($_FILES["image"]) || !isset($_FILES["image"]["error"])) { // 右のは改ざんされたフォームからのチェック
+            // 変なファイル飛んできたらエスケープ
+            throw new \Exception("無効のファイルです。");
+        }
 
-    // エラーの種類に応じた処理
-    switch ($_FILES["image"]["error"]) {
-      case UPLOAD_ERR_OK: // うまくいった場合
-        return true;
-      case UPLOAD_ERR_INI_SIZE: // 既定のサイズを超えていた場合
-      case UPLOAD_ERR_FORM_SIZE:
-        throw new \Exception("ファイルサイズが大きすぎるゥ！！！");
-      default:
-        throw new \Exception("何かわからんけど……エラー。" . $_FILES["image"]["error"]);
-    }
+        // エラーの種類に応じた処理
+        switch ($_FILES["image"]["error"]) {
+            case UPLOAD_ERR_OK: // うまくいった場合
+                return true;
+            case UPLOAD_ERR_INI_SIZE: // 既定のサイズを超えていた場合
+            case UPLOAD_ERR_FORM_SIZE:
+                throw new \Exception("ファイルサイズが大きすぎます。");
+            default:
+                throw new \Exception("原因不明のエラーが発生しました。" . $_FILES["image"]["error"]);
+        }
     }
 }
